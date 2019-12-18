@@ -1,0 +1,13 @@
+menuconfig LIBBOOST
+	bool "boost - "
+	select LIBCXX
+	select UKUNISTD
+	select UKSYSINFO
+	select LIBUKTIME
+	select LIBNEWLIBC
+	select LIBUKMMAP
+	select LIBINTEL_INTRINSICS
+	select LIBPTHREAD_EMBEDDED
+	select LIBCOMPILER_RT_ATOMIC
+	default n
+
