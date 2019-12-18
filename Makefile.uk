@@ -1,0 +1,776 @@
+#  libboost Makefile.uk
+#
+#  Authors: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
+#
+#  Copyright (c) 2019, Politehnica University of Bucharest. All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived from
+#     this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+#  THIS HEADER MAY NOT BE EXTRACTED OR MODIFIED IN ANY WAY.
+#
+
+################################################################################
+# Library registration
+################################################################################
+$(eval $(call addlib_s,libboost,$(CONFIG_LIBBOOST)))
+
+################################################################################
+# Sources
+################################################################################
+LIBBOOST_VERSION=1.71.0
+LIBBOOST_URL=https://dl.bintray.com/boostorg/release/$(LIBBOOST_VERSION)/source/boost_1_71_0.tar.gz
+LIBBOOST_PATCHDIR=$(LIBBOOST_BASE)/patches
+$(eval $(call fetch,libboost,$(LIBBOOST_URL)))
+$(eval $(call patch,libboost,$(LIBBOOST_PATCHDIR),boost_1_71_0))
+################################################################################
+# Helpers
+################################################################################
+LIBBOOST_SUBDIR=boost_1_71_0
+LIBBOOST_SRC = $(LIBBOOST_ORIGIN)/$(LIBBOOST_SUBDIR)
+
+################################################################################
+# Library includes
+################################################################################
+CINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_SRC)/
+CXXINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_SRC)/
+
+CINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_BASE)/include
+CXXINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_BASE)/include
+
+CINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_SRC)/libs/math/src/tr1
+CXXINCLUDES-$(CONFIG_LIBBOOST) += -I$(LIBBOOST_SRC)/libs/math/src/tr1
+################################################################################
+# Global flags
+################################################################################
+# Suppressed flags
+LIBBOOST_SUPPRESS_FLAGS += -Wno-unused-parameter			\
+	-Wno-unused-variable -Wno-unused-value -Wno-unused-function 	\
+	-Wno-missing-field-initializers -Wno-implicit-fallthrough 	\
+	-Wno-cast-function-type -Wno-stringop-truncation 		\
+	-Wno-char-subscripts -Wno-sign-compare -Wno-parentheses		\
+	-Wno-deprecated-declarations
+
+LIBBOOST_CFLAGS-y	+= $(LIBBOOST_SUPPRESS_FLAGS) -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+LIBBOOST_CXXFLAGS-y	+= $(LIBBOOST_SUPPRESS_FLAGS)
+
+################################################################################
+# Library sources
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/boost/asio/impl/src.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/boost/spirit/home/support/char_encoding/unicode/create_tables.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_BASE)/glue.cpp
+
+################################################################################
+# Boost sources - libs - date_time
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_month.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/date_generators.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/gregorian_types.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_weekday.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/posix_time/posix_time_types.cpp
+
+################################################################################
+# Boost sources - libs - filesystem
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/windows_file_codecvt.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/portability.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/unique_path.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/codecvt_error_category.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/operations.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/path_traits.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/path.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/filesystem/src/utf8_codecvt_facet.cpp|filesystem
+
+################################################################################
+# Boost sources - libs - thread
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/thread/src/pthread/thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/thread/src/pthread/once.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/thread/src/pthread/once_atomic.cpp|thread
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/thread/src/future.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/thread/src/tss_null.cpp
+
+################################################################################
+# Boost sources - libs - math
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fmax.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/legendref.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cbrt.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_neumann.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expintf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_3.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/betaf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_neumannf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_3l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cbrtl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expm1f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/tgammaf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lgammaf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expint.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_1l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/copysignl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hypotf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_jf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_legendre.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/asinhf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fminf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hermitel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/asinh.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erfl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/asinhl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fpclassifyf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/betal.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_1f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_bessel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erfcl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/laguerref.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_2.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_legendrel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_neumannf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_legendref.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nexttowardf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lgamma.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_3f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_3.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_legendref.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hermite.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/roundf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/legendrel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/atanhf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/acoshl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/atanh.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_1.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/atanhl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/acosh.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_laguerref.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nexttoward.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fmaxl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_2l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_neumann.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/round.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_if.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_2.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/log1pf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_besself.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_legendrel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expm1.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/tgamma.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/log1pl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cbrtf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_laguerrel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_3l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lroundl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_j.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_neumannl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/laguerre.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_il.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/riemann_zeta.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/roundl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expm1l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_2f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/copysignf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/trunc.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/laguerrel.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_kl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_kf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fpclassify.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lgammal.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fpclassifyl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/riemann_zetal.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/riemann_zetaf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hypotl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_2f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/beta.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_jl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_1l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nextafterl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_k.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/acoshf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erfc.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/llround.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/assoc_laguerre.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/tgammal.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_neumannl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/cyl_bessel_i.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/expintl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lround.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nexttowardl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/ellint_1.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_2l.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/truncl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nextafterf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/log1p.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erff.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fmin.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/lroundf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/legendre.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/llroundl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_3f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/nextafter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_bessell.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fminl.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/truncf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hypot.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/sph_legendre.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/hermitef.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/llroundf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/erfcf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/fmaxf.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/comp_ellint_1f.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/src/tr1/copysign.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/minimax/f.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/math/minimax/main.cpp
+
+################################################################################
+# Boost sources - libs - regex
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/cregex.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/static_mutex.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/winstances.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/posix_api.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/w32_regex_traits.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/cpp_regex_traits.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/regex_traits_defaults.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/usinstances.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/wide_posix_api.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/wc_regex_traits.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/regex_raw_buffer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/c_regex_traits.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/regex.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/instances.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/regex_debug.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/fileiter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/regex/src/icu.cpp
+
+################################################################################
+# Boost sources - libs - context
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/execution_context.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/dummy.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/fiber.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/windows/stack_traits.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/continuation.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/untested.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/src/posix/stack_traits.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/context/build/cxx11_hdr_mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/concept_check/bad_error_eg.cpp
+
+################################################################################
+# Boost sources - libs - graph_parallel
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/graph_parallel/src/tag_allocator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/graph_parallel/src/mpi_process_group.cpp
+
+################################################################################
+# Boost sources - libs - program_options
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/parsers.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/config_file.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/positional_options.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/options_description.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/convert.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/split.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/variables_map.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/cmdline.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/winmain.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/utf8_codecvt_facet.cpp|program
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/program_options/src/value_semantic.cpp
+
+################################################################################
+# Boost sources - libs - contract
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/contract/src/contract.cpp
+
+################################################################################
+# Boost sources - libs - system
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/system/src/error_code.cpp
+
+################################################################################
+# Boost sources - libs - wave
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_cpp_exprgrammar.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_re2c_lexer_str.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_cpp_literalgrs.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/cpplexer/re2clex/cpp_re.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/cpplexer/re2clex/aq.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_cpp_grammar.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/token_ids.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_defined_grammar.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/wave_config_constant.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_predef_macros.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/src/instantiate_re2c_lexer.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/wave/tool/cpp.cpp
+
+################################################################################
+# Boost sources - libs - serialization
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/mapped_file.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/zstd.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/zlib.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/bzip2.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/gzip.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/lzma.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/iostreams/src/file_descriptor.cpp
+
+################################################################################
+# Boost sources - libs - serialization
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/archive_exception.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_pointer_oserializer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_text_woarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_wgrammar.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/text_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_text_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_xml_woarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_xml_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/binary_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_text_iprimitive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/stl_port.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/extended_type_info_typeid.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_text_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_pointer_iserializer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/void_cast.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_oserializer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_grammar.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_wiarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_serializer_map.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_text_wiprimitive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/codecvt_null.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_binary_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/extended_type_info_no_rtti.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/binary_woarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_xml_archive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/extended_type_info.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_xml_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_iserializer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/text_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_binary_oarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_xml_wiarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/binary_wiarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_iarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_archive_exception.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/text_wiarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/polymorphic_text_wiarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_archive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_text_woprimitive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/xml_woarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/basic_text_oprimitive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/text_woarchive.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/utf8_codecvt_facet.cpp|serialization
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/serialization/src/binary_oarchive.cpp
+
+################################################################################
+# Boost sources - libs - container
+###############################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/global_resource.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/unsynchronized_pool_resource.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/pool_resource.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/monotonic_buffer_resource.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/dlmalloc.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/synchronized_pool_resource.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/dlmalloc_2_8_6.c
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/alloc_lib.c
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/container/src/dlmalloc_ext_2_8_6.c|container
+
+################################################################################
+# Boost sources - libs - chrono
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/chrono/src/process_cpu_clocks.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/chrono/src/thread_clock.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/chrono/src/chrono.cpp
+
+################################################################################
+# Boost sources - libs - type_erasure
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/type_erasure/src/dynamic_binding.cpp
+
+################################################################################
+# Boost sources - libs - test
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/unit_test_main.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/decorator.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/debug.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/results_reporter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/unit_test_monitor.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/execution_monitor.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/cpp_main.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/test_framework_init_observer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/plain_report_formatter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/results_collector.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/compiler_log_formatter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/test_tree.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/progress_monitor.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/test_main.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/unit_test_log.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/framework.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/xml_log_formatter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/test_tools.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/unit_test_parameters.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/xml_report_formatter.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/test/src/junit_log_formatter.cpp
+
+################################################################################
+# Boost sources - libs - locale
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/encoding/codepage.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/std/collate.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/std/converter.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/std/numeric.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/std/std_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/std/codecvt.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/date_time.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/collator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/conversion.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/icu_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/numeric.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/time_zone.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/codecvt.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/formatter.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/icu/boundary.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/util/locale_data.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/util/codecvt_converter.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/util/default_locale.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/util/gregorian.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/util/info.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/posix/posix_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/posix/collate.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/posix/converter.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/posix/numeric.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/posix/codecvt.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/date_time.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/mo_lambda.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/formatting.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/ids.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/format.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/message.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/generator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/locale/src/shared/localization_backend.cpp
+
+################################################################################
+# Boost sources - libs - atomic
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/atomic/src/lockpool.cpp
+
+################################################################################
+# Boost sources - libs - log
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/text_ostream_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/exceptions.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/thread_id.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/code_conversion.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/trivial.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/dump_ssse3.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/default_sink.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/date_time_format_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/filter_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/default_formatter_factory.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/parser_utils.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/init_from_settings.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/matches_relation_factory.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/settings_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/init_from_stream.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/formatter_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/setup/default_filter_factory.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/attribute_set.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/ipc_reliable_message_queue.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/mapped_shared_memory.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/ipc_sync_wrappers.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/event_log_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/light_rw_mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/object_name.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/windows/debug_output_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/thread_specific.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/timestamp.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/named_scope.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/text_multifile_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/event.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/threadsafe_queue.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/default_attribute_names.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/global_logger_storage.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/text_file_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/once_block.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/spirit_encoding.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/dump_avx2.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/named_scope_format_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/permissions.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/process_name.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/record_ostream.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/core.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/severity_level.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/posix/ipc_reliable_message_queue.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/posix/object_name.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/process_id.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/syslog_backend.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/format_parser.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/timer.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/attribute_value_set.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/attribute_name.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/log/src/dump.cpp
+
+################################################################################
+# Boost sources - libs - exception
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/exception/src/clone_current_exception_non_intrusive.cpp
+
+################################################################################
+# Boost sources - libs - timer
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/timer/src/cpu_timer.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/timer/src/auto_timers_construction.cpp
+
+################################################################################
+# Boost sources - libs - random
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/random/src/random_device.cpp
+
+################################################################################
+# Boost sources - libs - python
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/tuple.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/list.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object_operators.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/str.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object_protocol.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/import.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/errors.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/scalars.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/ufunc.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/matrix.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/dtype.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/numpy.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/numpy/ndarray.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/module.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/dict.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/long.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/exec.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/function.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/enum.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/pickle_support.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/class.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/life_support.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/function_doc_signature.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/inheritance.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/iterator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/object/stl_iterator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/wrapper.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/converter/arg_to_python_base.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/converter/from_python.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/converter/builtin_converters.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/converter/type_id.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/converter/registry.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/python/src/slice.cpp
+
+################################################################################
+# Boost sources - libs - smart_ptr
+################################################################################
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/smart_ptr/extras/src/sp_debug_hooks.cpp
+LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/smart_ptr/extras/src/sp_collector.cpp
+
+################################################################################
+# Boost sources - libs - fiber
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/timed_mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/recursive_mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/hpux/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/hpux/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/aix/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/aix/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/windows/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/windows/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/linux/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/linux/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/algo/work_stealing.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/solaris/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/solaris/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/freebsd/topology.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/freebsd/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/numa/pin_thread.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/fiber.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/algo/shared_work.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/algo/work_stealing.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/algo/round_robin.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/algo/algorithm.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/condition_variable.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/scheduler.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/properties.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/recursive_timed_mutex.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/context.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/future.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/fiber/src/barrier.cpp
+
+################################################################################
+# Boost sources - libs - strace
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/stacktrace/src/backtrace.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/stacktrace/src/noop.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/stacktrace/src/addr2line.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/stacktrace/src/basic.cpp|stacktrace
+
+################################################################################
+# Boost sources - libs - proto
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/proto/preprocess/preprocess_proto.cpp
+
+################################################################################
+# Boost sources - libs - mpl
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector50_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector40.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector10_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector20.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector30.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector50.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector20_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector30_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector40_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/vector/vector10.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/bitxor.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/iter_fold_impl.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/list_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/equal_to.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/list.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/apply_fwd.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/template_arity.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/quote.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/less.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/map.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/or.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/vector.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/advance_forward.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/vector_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/apply.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/full_lambda.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/fold_impl.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/bind_fwd.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/arg.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/not_equal_to.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/reverse_iter_fold_impl.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/greater.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/advance_backward.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/basic_bind.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/set.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/bitand.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/inherit.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/and.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/minus.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/iter_fold_if_impl.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/reverse_fold_impl.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/modulus.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/greater_equal.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/shift_left.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/unpack_args.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/bind.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/bitor.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/lambda_no_ctps.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/divides.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/plus.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/times.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/less_equal.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/deque.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/set_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/placeholders.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/apply_wrap.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/src/shift_right.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/map/map30.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/map/map10.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/map/map20.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/map/map40.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/map/map50.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set20_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set10_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set10.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set40_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set20.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set40.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set30.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set50.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set30_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/set/set50_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list50_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list20_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list40.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list20.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list10_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list40_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list30_c.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list10.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list30.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpl/preprocessed/list/list50.cpp
+
+################################################################################
+# Boost sources - libs - mpi
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/broadcast.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/packed_skeleton_iarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/environment.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/computation_tree.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/text_skeleton_oarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/mpi_datatype_oarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/request.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/error_string.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/packed_oarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/point_to_point.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/graph_communicator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/packed_iarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/communicator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_communicator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/datatypes.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_timer.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/documentation.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/module.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_exception.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_environment.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_request.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/serialize.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/py_nonblocking.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/skeleton_and_content.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/collectives.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/python/status.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/intercommunicator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/cartesian_communicator.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/group.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/content_oarchive.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/offsets.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/timer.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/mpi_datatype_cache.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/exception.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/mpi/src/packed_skeleton_oarchive.cpp
+
+################################################################################
+# Boost sources - libs - coroutine
+################################################################################
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/coroutine/src/exceptions.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/coroutine/src/posix/stack_traits.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/coroutine/src/detail/coroutine_context.cpp
