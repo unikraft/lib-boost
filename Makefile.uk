@@ -39,7 +39,7 @@ $(eval $(call addlib_s,libboost,$(CONFIG_LIBBOOST)))
 # Sources
 ################################################################################
 LIBBOOST_VERSION=1.71.0
-LIBBOOST_URL=https://dl.bintray.com/boostorg/release/$(LIBBOOST_VERSION)/source/boost_1_71_0.tar.gz
+LIBBOOST_URL=https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.gz
 LIBBOOST_PATCHDIR=$(LIBBOOST_BASE)/patches
 $(eval $(call fetch,libboost,$(LIBBOOST_URL)))
 $(eval $(call patch,libboost,$(LIBBOOST_PATCHDIR),boost_1_71_0))
@@ -84,11 +84,11 @@ LIBBOOST_SRCS-y += $(LIBBOOST_BASE)/glue.cpp
 ################################################################################
 # Boost sources - libs - date_time
 ################################################################################
-LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_month.cpp
-LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/date_generators.cpp
-LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/gregorian_types.cpp
-LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_weekday.cpp
-LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/posix_time/posix_time_types.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_month.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/date_generators.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/gregorian_types.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/gregorian/greg_weekday.cpp
+#LIBBOOST_SRCS-y += $(LIBBOOST_SRC)/libs/date_time/src/posix_time/posix_time_types.cpp
 
 ################################################################################
 # Boost sources - libs - filesystem
