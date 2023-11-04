@@ -38,15 +38,15 @@ $(eval $(call addlib_s,libboost,$(CONFIG_LIBBOOST)))
 ################################################################################
 # Sources
 ################################################################################
-LIBBOOST_VERSION=1.71.0
-LIBBOOST_URL=https://dl.bintray.com/boostorg/release/$(LIBBOOST_VERSION)/source/boost_1_71_0.tar.gz
+LIBBOOST_VERSION=1.80.0
+LIBBOOST_URL=https://boostorg.jfrog.io/artifactory/main/release/$(LIBBOOST_VERSION)/source/boost_1_80_0.tar.gz
 LIBBOOST_PATCHDIR=$(LIBBOOST_BASE)/patches
 $(eval $(call fetch,libboost,$(LIBBOOST_URL)))
-$(eval $(call patch,libboost,$(LIBBOOST_PATCHDIR),boost_1_71_0))
+$(eval $(call patch,libboost,$(LIBBOOST_PATCHDIR),boost_1_80_0))
 ################################################################################
 # Helpers
 ################################################################################
-LIBBOOST_SUBDIR=boost_1_71_0
+LIBBOOST_SUBDIR=boost_1_80_0
 LIBBOOST_SRC = $(LIBBOOST_ORIGIN)/$(LIBBOOST_SUBDIR)
 
 ################################################################################
